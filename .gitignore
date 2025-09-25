@@ -1,0 +1,6 @@
+.sandbox
+bin
+debug
+target
+**/*.rs.bk
+**/mutants.out*/

@@ -1,0 +1,43 @@
+FROM ubuntu:22.04
+
+# Install basic utilities and development tools
+RUN apt-get update && apt-get install -y \
+    tree \
+    vim \
+    curl \
+    wget \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -s /bin/bash -u 1000 sandbox && \
+    mkdir -p /app && \
+    chown sandbox:sandbox /app
+
+# Copy sandbox script to usr/local/bin (as root)
+COPY sandbox.sh /usr/local/bin/sandbox.sh
+RUN chmod +x /usr/local/bin/sandbox.sh
+
+# Set working directory
+WORKDIR /app
+
+# Switch to non-root user
+USER sandbox
+
+# Set Node.js version and NVM environment
+ENV NODE_VERSION=20.17.0
+ENV NVM_DIR=/home/sandbox/.nvm
+
+# Install nvm, Node.js, and Claude Code
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash \
+    && . $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm use $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && npm install -g @anthropic-ai/claude-code
+
+# Add Node.js to PATH permanently
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# Default command - run sandbox script from usr/local/bin
+CMD ["/usr/local/bin/sandbox.sh"]

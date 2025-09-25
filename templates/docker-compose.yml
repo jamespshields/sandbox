@@ -1,0 +1,20 @@
+services:
+  {{CONTAINER_NAME}}:
+    image: sandbox-base:latest
+    container_name: {{CONTAINER_NAME}}
+    volumes:
+      - "{{CURRENT_DIR}}:/app"
+      - {{VOLUME_NAME}}:/home/sandbox
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: /usr/local/bin/sandbox.sh
+    deploy:
+      resources:
+        limits:
+          cpus: '{{CPUS}}'
+          memory: {{MEMORY}}
+
+volumes:
+  {{VOLUME_NAME}}:
+    name: {{VOLUME_NAME}}
