@@ -52,6 +52,21 @@ sb claude --help
 sb claude [other-claude-args]
 ```
 
+### Resource Configuration
+
+You can configure CPU and memory limits for containers using environment variables:
+
+- `SB_CPUS` - Number of CPUs to allocate (default: 4)
+- `SB_MEMORY` - Memory limit (default: 8g)
+
+Example:
+
+```bash
+export SB_CPUS=2
+export SB_MEMORY=4g
+sb claude
+```
+
 ### Clean Up
 
 Remove all sandbox containers, images, and volumes:
